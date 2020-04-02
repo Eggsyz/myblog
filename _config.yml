@@ -3,17 +3,17 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 闪烁之狐
-subtitle: 闪烁之狐
-description: 从来没有真正的绝境，只有心灵的迷途
-keywords: 闪烁之狐, Blinkfox
-author: blinkfox
+title: 光阴荏苒
+subtitle: 光阴荏苒
+description: 学而不思则罔，思而不学则殆
+keywords: 闪烁之狐
+author: Eggsy
 language: zh-CN
 timezone:
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: https://blinkfox.github.io/
+url: https://eggsyz.github.io/
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:

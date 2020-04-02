@@ -1,6 +1,6 @@
 ---
 title: Hexo博客主题之hexo-theme-matery的介绍
-date: 2018-09-28 13:34:00
+date: 2019-09-28 13:34:00
 author: blinkfox
 cover: true
 categories: 前端
@@ -8,7 +8,7 @@ tags:
   - Hexo
   - hexo-theme-matery
 ---
-[English Document](README.md) | [演示示例](https://blinkfox.github.io/) | QQ交流群:`926552981`
+[English Document](README.md) | [演示示例](https://blinkfox.github.io/)
 
 > 这是一个采用`Material Design`和响应式设计的 Hexo 博客主题。
 
@@ -69,7 +69,7 @@ hexo new page "categories"
 ```yaml
 ---
 title: categories
-date: 2018-09-30 17:25:30
+date: 2019-09-30 17:25:30
 type: "categories"
 layout: "categories"
 ---
@@ -88,7 +88,7 @@ hexo new page "tags"
 ```yaml
 ---
 title: tags
-date: 2018-09-30 18:23:38
+date: 2019-09-30 18:23:38
 type: "tags"
 layout: "tags"
 ---
@@ -107,7 +107,7 @@ hexo new page "about"
 ```yaml
 ---
 title: about
-date: 2018-09-30 17:25:30
+date: 2019-09-30 17:25:30
 type: "about"
 layout: "about"
 ---
@@ -126,7 +126,7 @@ hexo new page "friends"
 ```yaml
 ---
 title: friends
-date: 2018-12-12 21:25:30
+date: 2019-12-12 21:25:30
 type: "friends"
 layout: "friends"
 ---
@@ -370,7 +370,7 @@ music:
 ```yaml
 ---
 title: typora-vue-theme主题介绍
-date: 2018-09-07 09:25:00
+date: 2019-09-07 09:25:00
 ---
 ```
 
@@ -379,7 +379,7 @@ date: 2018-09-07 09:25:00
 ```yaml
 ---
 title: typora-vue-theme主题介绍
-date: 2018-09-07 09:25:00
+date: 2019-09-07 09:25:00
 author: 赵奇
 img: /source/images/xxx.jpg
 top: true
@@ -398,15 +398,15 @@ tags:
 
 ## 效果截图
 
-![首页](http://static.blinkfox.com/matery-20181202-1.png)
+![首页](http://static.blinkfox.com/matery-20191202-1.png)
 
-![首页推荐文章](http://static.blinkfox.com/matery-20181202-2.png)
+![首页推荐文章](http://static.blinkfox.com/matery-20191202-2.png)
 
-![首页文章列表](http://static.blinkfox.com/matery-20181202-3.png)
+![首页文章列表](http://static.blinkfox.com/matery-20191202-3.png)
 
-![首页文章列表](http://static.blinkfox.com/matery-20181202-7.png)
+![首页文章列表](http://static.blinkfox.com/matery-20191202-7.png)
 
-![首页文章列表](http://static.blinkfox.com/matery-20181202-8.png)
+![首页文章列表](http://static.blinkfox.com/matery-20191202-8.png)
 
 ## 自定制修改
 

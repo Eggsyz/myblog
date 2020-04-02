@@ -1,444 +1,243 @@
 ---
-title: Git知识点整理
-date: 2018-09-24 21:50:00
-author: blinkfox
-img: http://static.blinkfox.com/hexoblog_20180924_git.jpg
-categories: 软件工具
-tags: Git
+layout: blog
+title: "Git常见操作以及版本开发规范"
+background: green
+date:  2020-03-21T15:33:03
+category: git
+tags:
+- git
 ---
 
-## 1. Git基本概念。
+Git工具的使用是作为一个合格码农必备技能。对Git工具的使用有助于提升我们IT从业人员项目开发效率以及管理工作。Git 的工作就是创建和保存你项目的快照及与之后的快照进行对比。
 
-- `repository`
-- `config`
-- `init`
-- `clone`
-- `fetch`
-- `pull`
-- `commit`
-- `push`
-- `branch`
-- `head`
-- `tag`
-- `merge`
-- `conflict`
-- `diff`
-- `log`
-- `show`
-- `status`
+## 版本开发规范
 
-## 2. Git工作空间和文件状态
+在我们IT人员开发项目的流程中，经常会按照一定规范定义我们的版本。所谓代码版本管理，是指对代码开发、测试、发布、维护过程中的分支与tag的命名、创建、使用、删除、合并等生命周期进行管理的过程。
 
-### (1).工作空间
+### 分支的分类
 
-![Git工作空间][1]
++ **版本主分支：master分支**
 
-左侧为工作区，右侧为版本库。
+  **定义**：可用稳定版本分支，包含了所有稳定版本的历史
 
-- 工作区（`Working Directory`） 就是在电脑里能看到的目录，比如learngit文件夹就是一个工作区。
-- 版本库（`Repository`）工作区有一个隐藏目录`.git`，是Git的版本库。
+  **使用**：只有正式版本发布或者线上问题修复版本发布时，才可以往该分支中合并代码。任何其它情况不可以直接操作该分支，必须通过Pull Request的形式合并代码
 
-在版本库中标记为`index`的区域为暂存区，标记为`master`的是Git为我们自动创建的第一个分支，代表的是目录树。此时`HEAD`实际是指向`master`分支的一个“游标”，所以图示的命令中出现HEAD的地方可以用`master`来替换。图中的objects标识的区域为git的对象库，实际位于`.git/objects`目录下。
+  **操作人员**：项目负责人
 
-- 当对工作区修改（或新增）的文件执行`git add`命令时，暂存区的目录树会被更新，同时工作区修改（或新增）的文件内容会被写入到对象库中的一个新的对象中，而该对象的id被记录在暂存区的文件索引中。
-- 当执行提交操作`git commit`时，暂存区的目录树会写到版本库（对象库）中，master分支会做相应的更新，即master最新指向的目录树就是提交时原暂存区的目录树。
-- 当执行`git reset HEAD`命令时，暂存区的目录树会被重写，会被master分支指向的目录树所替换，但是工作区不受影响。
-- 当执行`git rm --cached`命令时，会直接从暂存区删除文件，工作区则不做出改变。
-- 当执行`git checkout .`或`git checkout --` 命令时，会用暂存区全部的文件或指定的文件替换工作区的文件。这个操作很危险，会清楚工作区中未添加到暂存区的改动。
-- 当执行`git checkout HEAD .`或`git checkout HEAD`命令时，会用HEAD指向的master分支中的全部或部分文件替换暂存区和工作区中的文件。这个命令也是极度危险的。因为不但会清楚工作区中未提交的改动，也会清楚暂存区中未提交的改动。
++ **开发主线分支：develop分支**
 
-### (1).文件状态
+  **定义**：开发主分支，包含了所有的代码提交历史 
 
-Git 有三种状态，你的文件可能处于其中之一：**已提交(`committed`)**、**已修改(`modified`)**和**已暂存(`staged`)**。
+  **使用**：不可以直接往该分支上提交代码，可基于该分支派生出其他分支进行开发，开发完成后，再合入该分支。合并的方式只能通过pull request 
 
-## 3. Git配置系统级、全局、当前仓库用户名、邮箱的命令
+  **操作人员**：项目负责人
 
-系统级、全局、当前仓库选项分别是:仓库-system、-global、-local(或默认不填)
++ **功能分支：feature分支**
 
-```bash
-git config --global user.name "Jerry Mouse"
-git config --global user.email "jerry@yiibai.com"
+  **定义**：功能分支，临时为开发某一个具体的功能所建的分支 
+
+  **使用**：当需要开发某一个功能时，临时基于develop派生出来基于该分支进行迭代工作，当迭代结束时，将代码合并到develop分支中，然后删除该分支
+
+  **操作人员**：开发人员
+
++ **发布分支：release分支**
+
+  **定义**：发布分支，当开发完成转测的时候用到的分支
+
+  **使用**：当某一个版本的开发工作结束，将要转测试时，基于develop派生出来该类型的分支。基于该分支进行bug修复工作。当测试完成，所有的bug都修复完成，将该分支合并到master分支并打tag，同时合并到develop分支。最后，将该分支删除。在bug修复时，也可以基于release分支创建临时的bug分支进行开发，如bug/<redmine_id>
+
+  **命名**：以release/进行开头，如release/v1.0.0 
+
+  **操作人员**：开发人员
+
+## Git 介绍
+
+git架构如图所示。分为工作区、暂存区、本地仓库和远程仓库。具体操作如图所示。
+
+![img](http://images.cnblogs.com/cnblogs_com/wupeiqi/662608/o_git.png)
+
+## Git常见命令
+
+```go
+开始一个工作区（参见：git help tutorial）
+   clone      克隆仓库到一个新目录
+   init       创建一个空的 Git 仓库或重新初始化一个已存在的仓库
+
+在当前变更上工作（参见：git help everyday）
+   add        添加文件内容至索引
+   mv         移动或重命名一个文件、目录或符号链接
+   reset      重置当前 HEAD 到指定状态
+   rm         从工作区和索引中删除文件
+
+检查历史和状态（参见：git help revisions）
+   bisect     通过二分查找定位引入 bug 的提交
+   grep       输出和模式匹配的行
+   log        显示提交日志
+   show       显示各种类型的对象
+   status     显示工作区状态
+
+扩展、标记和调校您的历史记录
+   branch     列出、创建或删除分支
+   checkout   切换分支或恢复工作区文件
+   commit     记录变更到仓库
+   diff       显示提交之间、提交和工作区之间等的差异
+   merge      合并两个或更多开发历史
+   rebase     在另一个分支上重新应用提交
+   tag        创建、列出、删除或校验一个 GPG 签名的标签对象
+
+协同（参见：git help workflows）
+   fetch      从另外一个仓库下载对象和引用
+   pull       获取并整合另外的仓库或一个本地分支
+   push       更新远程引用和相关的对象
 ```
 
-列出Git设置
+接下来，将基于项目实际操作具体的git命令。
 
-```bash
+### 初始化项目
 
-git config --list
-git config -l
+当我们新建一个项目后，需要执行`git init`命令，创建一个 Git 仓库。
+
+```go
+➜  hyperManager git init 
+已初始化空的 Git 仓库于 /Users/eggsy/go/src/github.com/hyperManager/.git/
 ```
 
-## 4. Git fetch和pull的区别
+然后执行`git remote add`，将远程仓库和本地仓库绑定。
 
-- `git fetch`：相当于是从远程获取最新版本到本地，不会自动merge.
-- `git pull`：相当于是从远程获取最新版本并merge到本地.
-
-### (1). git fetch示例：
-
-```bash
-Git fetch origin master
-git log -p master..origin/master
-git merge origin/master
+```go
+➜  hyperManager git:(master) ✗ git remote add origin https://github.com/Eggsyz/hyperManager.git
+➜  hyperManager git:(master) ✗ git remote -v
+origin  https://github.com/Eggsyz/hyperManager.git (fetch)
+origin  https://github.com/Eggsyz/hyperManager.git (push)
 ```
 
-以上命令的含义：
+### 提交修改命令
 
-- 首先从远程的`origin`的`master`主分支下载最新的版本到`origin/master`分支上
-- 然后比较本地的`master`分支和`origin/master`分支的差别
-- 最后进行合并
-- 上述过程其实可以用以下更清晰的方式来进行：
+接下来，将介绍项目开发的一些命令
 
-### (1). git pull示例：
+1. 将修改添加到缓存
 
-```bash
-git pull origin master
+执行`git add`命令添加修改的文件到缓存区
+
+```go
+➜  hyperManager git:(master) ✗ git add README.md  
 ```
 
-上述命令其实相当于`git fetch`和`git merge`。在实际使用中，`git fetch`更安全一些，因为在merge前，我们可以查看更新情况，然后再决定是否合并。
+2. 将缓存数据保存到仓库
 
-## 5. Git reset和revert的却别
+执行`git commit`命令将缓存区文件写入本地仓库
 
-- `git revert`是用一次新的commit来回滚之前的commit，`git reset`是直接删除指定的commit。 
-- 在回滚这一操作上看，效果差不多。但是在日后继续merge以前的老版本时有区别。因为`git revert`是用一次逆向的commit“中和”之前的提交，因此日后合并老的branch时，导致这部分改变不会再次出现，但是`git reset`是之间把某些commit在某个branch上删除，因而和老的branch再次merge时，这些被回滚的commit应该还会被引入。
-- `git reset`是把HEAD向后移动了一下，而`git revert`是HEAD继续前进，只是新的commit的内容和要revert的内容正好相反，能够抵消要被revert的内容。
-- git revert与git reset最大的不同是，git revert 仅仅是撤销某次提交。
-
-另外，说一下`git revert`， `git reset –hard`和 `–soft`的区别
-
-- `git reset –mixed id`: 是将git的HEAD变了（也就是提交记录变了），但文件并没有改变，（也就是working tree并没有改变）。
-- `git reset –soft id`: 实际上，是`git reset –mixed id`后，又做了一次`git add`。
-- `git reset –herd id`: 是将git的HEAD变了，文件也变了。
-
-## 6. Git merge和reabse的相同点和不同点
-
-`merge`是合并的意思，`rebase`是复位基底的意思，相同点都是用来合并分支的。
-
-![merge和rebase][2]
-
-不同点:
-
-- `merge`操作会生成一个新的节点，之前的提交分开显示。而`rebase`操作不会生成新的节点，是将两个分支融合成一个线性的提交。
-- 解决冲突时。merge操作遇到冲突的时候，当前merge不能继续进行下去。手动修改冲突内容后，add 修改，commit就可以了。而`rebase`操作的话，会中断rebase,同时会提示去解决冲突。解决冲突后,将修改add后执行`git rebase –continue`继续操作，或者`git rebase –skip`忽略冲突。
-- `git pull`和`git pull --rebase`区别：`git pull`做了两个操作分别是"获取"和"合并"。所以加了rebase就是以rebase的方式进行合并分支，默认为merge。
-
-**总结**：选择 merge 还是 rebase？
-
-- merge 是一个合并操作，会将两个分支的修改合并在一起，默认操作的情况下会提交合并中修改的内容
-- merge 的提交历史忠实地记录了实际发生过什么，关注点在真实的提交历史上面
-- rebase 并没有进行合并操作，只是提取了当前分支的修改，将其复制在了目标分支的最新提交后面
-- rebase 的提交历史反映了项目过程中发生了什么，关注点在开发过程上面
-- merge 与 rebase 都是非常强大的分支整合命令，没有优劣之分，使用哪一个应由项目和团队的开发需求决定
-- merge 和 rebase 还有很多强大的选项，可以使用 git help <command> 查看
-
-## 7. Git stash是什么？它的相关使用方式命令
-
-- git stash: 备份当前的工作区的内容，从最近的一次提交中读取相关内容，让工作区保证和上次提交的内容一致。同时，将当前的工作区内容保存到Git栈中。
-- git stash pop: 从Git栈中读取最近一次保存的内容，恢复工作区的相关内容。由于可能存在多个Stash的内容，所以用栈来管理，pop会从最近的一个stash中读取内容并恢复。
-- git stash pop --index stash@{0}: 恢复编号为0的进度的工作区和暂存区。
-- git stash apply stash@{1} 以将你指定版本号为stash@{1}的工作取出来
-- git stash drop[<stash>] 删除某一个进度，默认删除最新进度
-- git stash list: 显示Git栈内的所有备份，可以利用这个列表来决定从那个地方恢复。
-- git stash clear: 清空Git栈。此时使用gitg等图形化工具会发现，原来stash的哪些节点都消失了
-
-```bash
-# 恢复工作进度
-git stash pop [--index] [<stash>]
---index 参数：不仅恢复工作区，还恢复暂存区
-<stash> 指定恢复某一个具体进度。如果没有这个参数，默认恢复最新进度
-
-# 这是git stash保存进度的完整命令形式
-git stash [save message] [-k|--no-keep-index] [--patch]
--k和--no-keep-index指定保存进度后，是否重置暂存区
---patch 会显示工作区和HEAD的差异,通过编辑差异文件，排除不需要保存的内容。和git add -p命令类似
-
-使用save可以对进度添加备注
-# git stash save "这是保存的进度"
+```go
+➜  hyperManager git:(master) ✗ git commit -m "first committed" 
 ```
 
-## 8. Git只从暂存区删除，从工作空间删除的命令分别是什么?
+3. 将本地仓库文件推送到远程仓库
 
-```bash
-git rm --cached
+执行`git push`命令将本地仓库文件推送到远程仓库
 
-git rm
-git commit
+```go
+➜  hyperManager git:(master) ✗ git push origin  master  
+枚举对象: 5, 完成.
+对象计数中: 100% (5/5), 完成.
+使用 8 个线程进行压缩
+压缩对象中: 100% (3/3), 完成.
+写入对象中: 100% (5/5), 450 bytes | 450.00 KiB/s, 完成.
+总共 5 （差异 0），复用 0 （差异 0）
+To https://github.com/Eggsyz/hyperManager.git
+ * [new branch]      master -> master
 ```
 
-## 9. Git标签的使用
+4. 查看提交记录
 
-```bash
-# 列出现有的标签
-git tag
+执行`git log`查看提交记录
 
-# 打标签
-git tag -a v1.01 -m "Relase version 1.01"
+5. 创建并切换新分支
 
-# 查看相应标签的版本信息
-git show v1.4
+```go
+git checkout -b develop master
 ```
 
-- -a 选项,创建一个含附注类型的标签
-- -m 选项,指定了对应的标签说明
+6. 出现问题，执行回滚操作
 
-## 9. Git分支的使用
-
-```bash
-# 查看本地分支
-git branch
-
-# 查看远程分支
-git branch -r
-
-# 创建本地分支(注意新分支创建后不会自动切换为当前分支)
-git branch [name]
-
-# 切换分支
-git checkout [name]
-
-# 创建新分支并立即切换到新分支
-git checkout -b [name]
-
-# 强制删除一个分支
-git branch -D [name]
-
-# 合并分支(将名称为[name]的分支与当前分支合并)
-git merge [name]
-
-# 查看各个分支最后提交信息
-git br -v
-
-# 查看已经被合并到当前分支的分支
-git br --merged
-
-# 查看尚未被合并到当前分支的分支
-git br --no-merged
+```go
+用命令git reset HEAD可以把暂存区的修改撤销掉（unstage），重新放回工作区：
+$ git reset HEAD 
 ```
 
-## 10. 介绍Git冲突处理经验，以及merge和rebase中的ours和theirs的差别。
+### 具体开发流程
 
-merge和rebase对于ours和theirs的定义是完全相反的。在merge时，ours指代的是当前分支，theirs代表需要被合并的分支。而在rebase过程中，ours指向了修改参考分支，theirs却是当前分支。因为rebase 隐含了一个`git checkout upstream`的过程，将`HEAD`从local分支变成了upstream分支。git会在rebase结束后撤销这个改变，但它已经不可避免地影响了冲突的状态，使rebase中ours和theirs的定义与merge 截然相反。因此，在使用ours与theirs时请格外小心。
+1. **项目负责人**会基于master派生develop分支
 
-## 11. Git远程操作相关
-
-### (1). clone
-
-> git clone <版本库的网址>
-> git clone <版本库的网址> <本地目录名>
-
-```bash
-# 克隆jQuery的版本库
- git clone https://github.com/jquery/jquery.git
- 
- git clone -o jQuery https://github.com/jquery/jquery.git
-```
-
-### (2). remote
-
-```bash
-# 列出所有远程主机
-git remote
-
-# 使用-v选项，可以参看远程主机的网址
-git remote -v
- 
-# 可以查看该主机的详细信息
-git remote show <主机名>
- 
-# 添加远程主机
-git remote add <主机名> <网址>
-
-# 删除远程主机
-git remote rm <主机名>
-
-# 修改远程主机名称
-git remote rename <原主机名> <新主机名>
-```
-
-### (3). fetch
-
-```bash
-# 取回所有分支(branch)的更新到本地
-git fetch <远程主机名>
-
-# 取回某的特定分支的更新
-git fetch <远程主机名> <分支名>
-
-# 取回origin主机的master分支的更新
-git fetch origin master
-
-# 所取回的更新，在本地主机上要用”远程主机名/分支名”的形式读取。比如origin主机的master，就要用origin/master读取。可以使用git merge命令或者git rebase命令，在本地分支上合并远程分支
-git merge origin/master
-git rebase origin/master
-```
-
-### (4). pull
-
-> git pull <远程主机名> <远程分支名>:<本地分支名>
-
-```bash
-# 取回origin主机的next分支，与本地的master分支合并
-git pull origin next:master
-
-# 如果远程分支是与当前分支合并，则冒号后面的部分可以省略。
-git pull origin next
-
-# 上面的命令实质上等同于先做git fetch，再做git merge。
-git fetch origin
-git merge origin/next
-
-# 合并需要采用rebase模式
-git pull --rebase <远程主机名> <远程分支名>:<本地分支名>
-```
-
-### (5). push
-
-> git push <远程主机名> <本地分支名>:<远程分支名>
-
-**注意**:分支推送顺序的写法是"<来源地>:<目的地>"，所以git pull是"<远程分支>:<本地分支>"，而git push是"<本地分支>:<远程分支>"。
-
-- 如果省略远程分支名，则表示将本地分支推送与之存在”追踪关系”的远程分支(通常两者同名)，如果该远程分支不存在，则会被新建。
-- 如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支。
-
-```bash
-# 将本地的master分支推送到origin主机的master分支。如果后者不存在，则会被新建
-git push origin master
-
-# 省略了本地分支，以下等同，删除origin主机的master分支
-git push origin :master
-git push origin --delete master
-
-# 如果当前分支与远程分支之间存在追踪关系，则本地分支和远程分支都可以省略
-git push origin
-
-# 如果当前分支只有一个追踪分支，那么主机名都可以省略。
-git push
-
-# 如果当前分支与多个主机存在追踪关系，则可以使用-u选项指定一个默认主机，这样后面就可以不加任何参数使用git push
-git push -u origin master
-
-# 不管是否存在对应的远程分支，将本地的所有分支都推送到远程主机
-git push --all origin
-
-# 强制推送
-git push --force origin
-
-# git push不会推送标签(tag)，除非使用–tags选项
-git push origin --tags
-```
-
-## 12. Git Flow使用简介
-
-就像代码需要代码规范一样，代码管理同样需要一个清晰的流程和规范。三种广泛使用的工作流程：
-
-- Git flow
-- Github flow
-- Gitlab flow
-
-三种工作流程，有一个共同点：都采用"功能驱动式开发"（Feature-driven development，简称FDD）。它指的是，需求是开发的起点，先有需求再有功能分支（feature branch）或者补丁分支（hotfix branch）。完成开发后，该分支就合并到主分支，然后被删除。最早诞生、并得到广泛采用的一种工作流程，就是[Git flow][3]。
-
-它最主要的特点有两个。首先，项目存在两个长期分支，分别是：主分支master、开发分支develop。其次，项目存在三种短期分支，分别是：功能分支（feature branch）、补丁分支（hotfix branch）、预发分支（release branch），一旦完成开发，它们就会被合并进develop或master，然后被删除。
-
-### (1). Git Flow流程图
-
-![Git Flow流程图][4]
-
-### (2). Git Flow常用的分支
-
-- `Production`分支。也就是我们经常使用的Master分支，这个分支最近发布到生产环境的代码，最近发布的Release， 这个分支只能从其他分支合并，不能在这个分支直接修改。
-- `Develop`分支。这个分支是我们是我们的主开发分支，包含所有要发布到下一个Release的代码，这个主要合并与其他分支，比如Feature分支。
-- `Feature`分支。这个分支主要是用来开发一个新的功能，一旦开发完成，我们合并回Develop分支进入下一个Release。
-- `Release`分支。当你需要一个发布一个新Release的时候，我们基于Develop分支创建一个Release分支，完成Release后，我们合并到Master和Develop分支。
-- `Hotfix`分支。当我们在Production发现新的Bug时候，我们需要创建一个Hotfix, 完成Hotfix后，我们合并回Master和Develop分支，所以Hotfix的改动会进入下一个Release。
-
-### (3). Git Flow代码示例
-
-#### a. 创建develop分支
-
-```bash
-git branch develop
+```go
+git checkout -b develop master
 git push -u origin develop
 ```
 
-#### b. 开始新Feature开发
+2. **开发人员**根据develop分支派生新的功能/特性分支
 
-```bash
-git checkout -b some-feature develop
-# Optionally, push branch to origin:
-git push -u origin some-feature
-
-# 做一些改动
-git status
-git add some-file
-git commit
+```go
+git checkout -b feature/p2p develop
+git push -u origin feature/p2p
 ```
 
-#### c. 完成Feature
+3. 功能完成开发后**开发人员**创建*PR*，**项目负责人**会review代码并合并到develop分支
 
-```bash
-git pull origin develop
-git checkout develop
-git merge --no-ff some-feature
-git push origin develop
-
-git branch -d some-feature
-
-# If you pushed branch to origin:
-git push origin --delete some-feature
+```go
+在github或者gitlab会看到new pull request选项，可通过这个来请求合并分支
 ```
 
-#### d. 开始Relase
+4. 删除feature/p2p分支
 
-```bash
-git checkout -b release-0.1.0 develop
-
-# Optional: Bump version number, commit
-# Prepare release, commit
+```go
+git branch -d feature/p2p
+git push -d origin feature/p2p
 ```
 
-#### e. 完成Release
+5. 当版本开发结束时，基于develop分支派出生release分支，如release/v1.0.0。
 
-```bash
-git checkout master
-git merge --no-ff release-0.1.0
-git push
-
-git checkout develop
-git merge --no-ff release-0.1.0
-git push
-
-git branch -d release-0.1.0
-
-# If you pushed branch to origin:
-git push origin --delete release-0.1.0   
-
-git tag -a v0.1.0 master
-git push --tags
+```go
+git checkout -b release/v1.0.0 develop
+git push -u origin release/v1.0.0
 ```
 
-#### f. 开始Hotfix
+6. 发布内测版本，即：基于release分支打tag，发布给**测试人员**。
 
-```bash
-git checkout -b hotfix-0.1.1 master
+```go
+git tag v1.0.0-alpha.1 release/v1.0.0
+git push origin v1.0.0-alpha.1
 ```
 
-#### g. 完成Hotfix
+7. **测试人员**如果测出bug，**开发人员**需要基于release派生bug分支，进行修复，当修复完成后提*PR*请求合并到release分支
 
-```bash
-git checkout master
-git merge --no-ff hotfix-0.1.1
-git push
-
-git checkout develop
-git merge --no-ff hotfix-0.1.1
-git push
-
-git branch -d hotfix-0.1.1
-
-git tag -a v0.1.1 master
-git push --tags
+```go
+git checkout -b bug/1234 release/v1.0.0
+git push -u origin bug/1234
+// 合并请求
+...
+// 删除bug分支
+git branch -d bug/1234
+git push -d origin bug/1234
 ```
 
-  [1]: http://blog.chinaunix.net/attachment/201402/19/10415985_139279770639pM.jpg
-  [2]: http://images2015.cnblogs.com/blog/759200/201608/759200-20160806092734215-279978821.png
-  [3]: http://nvie.com/posts/a-successful-git-branching-model/
-  [4]: http://static.blinkfox.com/ghost/imagegit_flow.png
+8. 当全部测试结束，所有bug都修复完成后，开始正式代码发布：**项目负责人**将release分支合并到master分支和develop分支中，并删除release分支。
+
+```go
+在gitlab或github上创建pull request进行代码合并
+```
+
+9. **项目负责人**基于master分支打tag，名字一般为版本号，如v1.0.0
+
+```go
+git tag v1.0.0 master
+git push origin v1.0.0
+```
+
+10. **项目负责人**可根据需要，将测试版本的tag号删除。也可以留着，以防后续需要。
+
+```go
+git tag -d v1.0.0-alpha.1
+git tag -d v1.0.0-alpha.2
+git push --delete origin v1.0.0-alpha.1
+git push --delete origin v1.0.0-alpha.2
+```
+
