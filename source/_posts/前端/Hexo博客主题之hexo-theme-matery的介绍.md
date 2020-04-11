@@ -1,6 +1,6 @@
 ---
 title: Hexo博客主题之hexo-theme-matery的介绍
-date: 2019-09-28 13:34:00
+date: 2018-09-28 13:34:00
 author: blinkfox
 cover: true
 categories: 前端
@@ -51,7 +51,7 @@ git clone https://github.com/blinkfox/hexo-theme-matery.git
 修改 Hexo 根目录下的 `_config.yml` 的  `theme` 的值：`theme: hexo-theme-matery`
 
 #### `_config.yml` 文件的其它修改建议:
- 
+
 - 请修改 `_config.yml` 的 `url` 的值为你的网站主 `URL`（如：`http://xxx.github.io`）。
 - 建议修改两个 `per_page` 的分页条数值为 `6` 的倍数，如：`12`、`18` 等，这样文章列表在各个屏幕下都能较好的显示。
 - 如果你是中文用户，则建议修改 `language` 的值为 `zh-CN`。

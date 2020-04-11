@@ -1,9 +1,8 @@
 ---
-layout: blog
+top: true
 title: "Git常见操作以及版本开发规范"
-background: green
 date:  2020-03-21T15:33:03
-category: git
+categories: git
 tags:
 - git
 ---

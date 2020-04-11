@@ -76,8 +76,8 @@ recommend:
 
 # Configure website favicon and LOGO
 # 配置网站favicon和网站LOGO
-favicon: /favicon.png
-logo: /medias/logo.png
+favicon: /medias/logo.ico
+logo: /medias/logo.ico
 
 # The configuration of the second button in the home banner,
 # including the display name of the button, the font awesome icon, and the hyperlink to the button.
@@ -120,7 +120,7 @@ reward:
 # minCharNumber: Approve copyright information by copying at least how many characters.
 # 是否激活复制文章时追加博客和作者的版权信息.
 copyright:
-  enable: false
+  enable: true
   minCharNumber: 120 # 至少复制多少个字符就追加版权信息.
   description: 本文章著作权归作者所有，任何形式的转载都请注明出处。
 
@@ -154,7 +154,7 @@ clicklove:
 profile:
   avatar: /medias/kenan.jpg
   career: 区块链研发工程师
-  introduction: 区块链和Go语言技术人员，关注区块链技术和生态的发展。
+  introduction: 区块链和Go语言技术人员，关注区块链技术和生态的发展。有兴趣的可以关注公众号"IT程序员客栈"哦。
 
 # config my projects informations in about page.
 # If you don't want to display this `My Projects` content, you can deactivate or delete this configuration.
@@ -236,29 +236,29 @@ postCalendar: true
 # Gitalk 评论模块的配置，默认为不激活
 gitalk:
   enable: true
-  owner: eggsy
+  owner: Eggsyz
   repo: eggsyz.github.io
   oauth:
     clientId: b83b360af90b67f66003
     clientSecret: 1f6ff5fd8b295e9eaf1348a5a2eff160c58d6565
   admin:
-    - blinkfox
+    - Eggsyz
 
 # the Gitment config，default disabled
 # Gitment 评论模块的配置，默认为不激活
 gitment:
   enable: false
-  owner:
-  repo:
+  owner: Eggsyz
+  repo: eggsyz.github.io
   oauth:
-    clientId:
-    clientSecret:
+    clientId: b83b360af90b67f66003
+    clientSecret: 1f6ff5fd8b295e9eaf1348a5a2eff160c58d6565
 
 # disqus config, default disabled
 # Disqus评论模块的配置，默认为不激活
 disqus:
   enable: false
-  shortname: blinkfox
+  shortname: eggsy
 
 # Livere comment configuration, the default is not activated
 # Livere 来必力评论模块的配置，默认为不激活
