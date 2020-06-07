@@ -1,11 +1,10 @@
 ---
 title: "区块链Fabric源码之交易提案的创建"
-top: true
 date:  2020-01-28 10:13:03
 categories: 区块链
 tags:
 - fabric
-- 
+- 源码
 ---
 
 本文主要介绍区块链Fabric交易创建流程。
@@ -47,7 +46,7 @@ peer chaincode invoke -o orderer.example.com:7050  --tls $CORE_PEER_TLS_ENABLED 
 
 首先，看看交易提案的数据结构是怎样的。
 
-![提案消息数据结构](../../../../../../../Desktop/%E6%8F%90%E6%A1%88%E6%B6%88%E6%81%AF%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.png)
+[![e950ac2e562fb0117b9b0021711313ba.png](https://wx2.sbimg.cn/2020/04/14/e950ac2e562fb0117b9b0021711313ba.png)](https://sbimg.cn/image/5ltI7)
 
 交易提案SignedProposal包括提案ProposalBytes以及签名Signature信息（和提案Header的创建者creator身份对应）。提案内容ProposalBytes主要包括头部Header以及内容Payload。其中头部主要包含创建者creator身份信息以及通道、交易、链码相关信息。而Payload包含主要的调用信息。
 

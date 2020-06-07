@@ -1,5 +1,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: http://www.itkezhan.top/sitemap.xml
-Sitemap: http://www.itkezhan.top/baidusitemap.xml
+Sitemap: https://www.itkezhan.top/sitemap.xml
+Sitemap: https://www.itkezhan.top/baidusitemap.xml
