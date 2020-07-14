@@ -13,7 +13,7 @@ tags:
 
 如下图所示，并发不等于并行，并发是在“某段时间”内可以同时运行多个任务，而并行是存在多个任务同时运行。在单核CPU上，并发的实现是通过时间片来进行多任务切换的，看起来像是同时运行多个任务，这就是**并发**。而在多核CPU上，可以让多个任务同时运行，这就是**并行**。
 
-<img src="https://tva1.sinaimg.cn/large/00831rSTly1gd1uo6gw2wj30ru0hiaas.jpg" style="zoom:40%">
+<img src="../../../../../../../../Desktop/00831rSTly1gd1uo6gw2wj30ru0hiaas.png" style="zoom:40%">
 
 ## 进程、线程、协程
 
@@ -51,7 +51,7 @@ func main() {
 
 在Golang中使用 Goroutine 并行执行任务并将 **Channel** 作为 Goroutine 之间的通信方式，虽然使用互斥锁和共享内存在 Golang中也可以完成 Goroutine 间的通信，但是使用 Channel 才是更推荐的做法 — **不要通过共享内存的方式进行通信，而是应该通过通信的方式共享内存**。
 
-<img src="https://tva1.sinaimg.cn/large/00831rSTly1gd1uspfrncj30by0bmt8u.jpg" style="zoom:50%">
+<img src="../../../../../../../../Desktop/00831rSTly1gd1uspfrncj30by0bmt8u.png" style="zoom:50%">
 
 ## Goroutine调度机制
 
@@ -59,21 +59,22 @@ func main() {
 
 **GPM**是Golang运行时（runtime）层面的实现，是Golang自己实现的一套调度系统。区别于操作系统调度OS线程。**G-P-M 模型**，包括 4 个重要结构，分别是**G、P、M、Sched：**
 
-<img src="https://tva1.sinaimg.cn/large/00831rSTly1gd1vdg2k1fj30jm0drweu.jpg" style="zoom:50%">
+<img src="../../../../../../../../Desktop/00831rSTly1gd1vdg2k1fj30jm0drweu.png" style="zoom:50%">
 
 其中：
 
 + **G**：表示 Goroutine，每一个 Goroutine 都包含堆栈、指令指针和其他用于调度的重要信息，每个 Goroutine 对应一个 G 结构体，G 存储 Goroutine 的运行堆栈、状态以及任务函数，可重用，G 并非执行体，每个 G 需要绑定到 P 才能被调度执行。
 + **P**：表示调度的上下文，它可以被看做一个运行于线程 M 上的本地调度器，**P 的数量决定了系统内最大可并行的 G 的数量**
 + **M**：表示操作系统的线程，它是被操作系统管理的线程，代表着真正执行计算的资源；
-
 + **Sched：Go 调度器，**它维护有存储 M 和 G 的队列以及调度器的一些状态信息等。
 
 ### 调度模型
 
-Go 调度器中有两个不同的运行队列：**全局运行队列(global runqueue: GRQ)和本地运行队列(local runqueue: LRQ)。**
+ 在Go中，线程是运行goroutine的实体，调度器的功能是把可运行的goroutine分配到工作线程上。Go 调度器中有两个不同的运行队列：**全局运行队列(global runqueue: GRQ)和本地运行队列(local runqueue: LRQ)。**
 
 从图可以看出，每个M对应一个P，每个P也有一个正在运行的G，而其他的G在排队等待调度。其中，P 的数量由用户设置的 GoMAXPROCS 决定，但是不论 GoMAXPROCS 设置为多大，P 的数量最大为 256。**P的数量决定了最大并行G的数量**。图中绿色的G并没有运行，处于ready状态。每个 P 都有一个 **LRQ**，用于管理分配给在 P 的上下文中执行的 Goroutines，这些 Goroutine 轮流被和 P 绑定的 M 进行上下文切换。**GRQ** 适用于尚未分配给 P 的 Goroutines。
+
+其中，M运行任务就得获取P，从P的本地队列获取G，当P队列为空时，M也会尝试从其他P的本地队列偷一半放到自己P的本地队列，如果无法获取，则从全局运行队列拿一批G放到P的本地队列。M运行G，G执行之后，M会从P获取下一个G，不断重复下去。当新建G时，G优先加入到P的本地运行队列，如果本地运行队列满了，则会把本地队列中一半的G移动到全局队列。
 
 <img src="https://tva1.sinaimg.cn/large/00831rSTly1gd1vuerkxsj30jm0ii3z4.jpg" style="zoom:50%">
 
@@ -81,7 +82,11 @@ Golang中，**为了更加充分利用线程的计算资源，Go 调度器采取
 
 + **任务窃取（work-stealing）**
 
-+ **减少阻塞**
+  当本线程无可运行的G时，尝试从其他线程绑定的P偷取G，而不是销毁线程。
+
++ **减少阻塞（hand off）**
+
+  当本线程因为G进行系统调用阻塞时，线程释放绑定的P，把P转移给其他空闲的线程执行。
 
 接下来将分别介绍对应的场景。
 
